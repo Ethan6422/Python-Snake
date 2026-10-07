@@ -83,7 +83,7 @@ def game_over_screen():
     global score
     window.fill((0, 0, 0))
     game_over_font = pygame.font.SysFont("arial", 50)
-    game_over_text = game_over_font.render(f"Game Over!" f"Score: {score}", True, white)
+    game_over_text = game_over_font.render(f"Game Over! Score: {score}", True, white)
     window.blit(game_over_text, (width // 2 - game_over_text.get_width() // 2, height // 2 - game_over_text.get_height() // 2))
     pygame.display.update()
 
@@ -110,33 +110,27 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            keys = pygame.key.get_pressed()
 
+        if not running:
+            break
 
-            if keys[pygame.K_UP]:
-                if snake_speed[1] == block_size:
-                    continue
-                snake_speed = [0, -block_size]
-            elif keys[pygame.K_DOWN]:
-                if snake_speed[1] == block_size:
-                    continue
-                snake_speed = [0, block_size]
-            elif keys[pygame.K_LEFT]:
-                if snake_speed[0] == block_size:
-                    continue
-                snake_speed = [-block_size, 0]
-            elif keys[pygame.K_RIGHT]:
-                if snake_speed[0] == -block_size:
-                    continue
-                snake_speed = [block_size, 0]
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP] or keys[pygame.K_w] and snake_speed != [0, block_size]:
+            snake_speed = [0, -block_size]
+        elif keys[pygame.K_DOWN] or keys[pygame.K_s] and snake_speed != [0, -block_size]:
+            snake_speed = [0, block_size]
+        elif keys[pygame.K_LEFT] or keys[pygame.K_a] and snake_speed != [block_size, 0]:
+            snake_speed = [-block_size, 0]
+        elif keys[pygame.K_RIGHT] or keys[pygame.K_d] and snake_speed != [-block_size, 0]:
+            snake_speed = [block_size, 0]
 
-            if game_over():
-                game_over_screen()
-                return
-            move_snake()
-            draw_objects()
-            pygame.display.update()
-            clock.tick(15)
+        move_snake()
+        if game_over():
+            game_over_screen()
+            return
+        draw_objects()
+        pygame.display.update()
+        clock.tick(15)
 
 if __name__ == "__main__":
     main()
